@@ -5,18 +5,18 @@
 				<div id="register-panel" class="panel panel-default">
   					<div class="panel-heading"><i class="fa fa-user-plus"></i>&nbsp;&nbsp;用户注册</div>
 					<div class="panel-body">
-    					<form>
+    					<form action="/user/register" method="post">
   							<div class="form-group">
     							<label for="email-input">Email地址</label>
-    							<input type="email" class="form-control" id="email-input" placeholder="Email">
+    							<input type="email" class="form-control" name="email" id="email-input" placeholder="Email">
   							</div>
   							<div class="form-group">
     							<label for="username-input">用户名</label>
-    							<input type="text" class="form-control" id="username-input" placeholder="用户名">
+    							<input type="text" class="form-control" name="name" id="name-input" placeholder="用户名">
   							</div>
   							<div class="form-group">
     							<label for="password-input">登陆密码</label>
-    							<input type="text" class="form-control" id="password-input" placeholder="登陆密码">
+    							<input type="text" class="form-control" name="password" id="password-input" placeholder="登陆密码">
   							</div>
   							  <button type="submit" class="btn btn-primary center-block">注册</button>
 
