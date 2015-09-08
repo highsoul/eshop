@@ -18,10 +18,12 @@ func (u User) CreateTable() {
 
 }
 
-func (u User) InsertToDB() {
+func (u User) InsertToDB() bool {
 	if T.DB.NewRecord(u) {
 		T.DB.Create(&u)
+		return true
 	} else {
 		fmt.Println("FALSE!")
+		return false
 	}
 }
