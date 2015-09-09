@@ -23,19 +23,13 @@ func main() {
 }
 
 func ShowIndex(c *gin.Context) {
-	cv, err := c.Request.Cookie("name")
-	if err != nil {
-		fmt.Println(err.Error())
-	} else {
 
-		if cv != nil {
-			fmt.Println("Cookie is " + cv.Value)
-		} else {
-			fmt.Println("Cookie is nil :(")
-		}
-
-	}
 	c.HTML(http.StatusOK, "index.html", nil)
+
+	cookie := c.MustGet("CM").(middleware.CookieManager)
+	for k, v := range cookie.CookieMap {
+		fmt.Println("Cookie [" + k + "]" + "  =  " + v)
+	}
 }
 
 func UserRegisterHandler(c *gin.Context) {
@@ -44,9 +38,12 @@ func UserRegisterHandler(c *gin.Context) {
 	} else if c.Request.Method == "POST" {
 		u := model.User{Email: c.PostForm("email"), Name: c.PostForm("name"), Password: c.PostForm("password")}
 		fmt.Println(u)
+
 		if u.InsertToDB() {
-			cookie := c.MustGet("CM")
+			cookie := c.MustGet("CM").(middleware.CookieManager)
 			cookie.Add("name", u.Name)
+			cookie.Add("id", u.ID)
+			cookie.Add("password", u.Password)
 		}
 		c.Redirect(http.StatusMovedPermanently, "/")
 	}

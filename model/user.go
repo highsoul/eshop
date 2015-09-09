@@ -7,9 +7,9 @@ import (
 
 type User struct {
 	gorm.Model
-	Name     string
-	Email    string
-	Password string
+	Name     string `sql:"not null;unique"`
+	Email    string `sql:"not null;unique"`
+	Password string `sql:"not null"`
 }
 
 func (u User) CreateTable() {
