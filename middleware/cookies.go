@@ -12,6 +12,7 @@ import (
 type CookieManager struct {
 	Context   *gin.Context
 	CookieMap map[string]string
+	Cookies   []http.Cookie
 }
 
 func ConvToString(i interface{}) string {
@@ -24,40 +25,47 @@ func ConvToString(i interface{}) string {
 	case "uint":
 		s = fmt.Sprintf("%d", i.(uint))
 	case "string":
-		s = i.(string)
+		fmt.Println("这是一个字符串")
+		s = fmt.Sprintf("%s", i.(string))
 
 	}
 	return s
 }
 
-func (cm CookieManager) InitCM(c *gin.Context) {
+func (cm *CookieManager) InitCM(c *gin.Context) {
 
 	for _, cookie := range c.Request.Cookies() {
 		cm.CookieMap[cookie.Name] = cookie.Value
 	}
 }
 
-func (cm CookieManager) Add(name string, value interface{}) {
+func (cm *CookieManager) Add(name string, value interface{}) {
 	c_value := ConvToString(value)
 	expire := time.Now().AddDate(0, 0, 1)
 	cookie := http.Cookie{Name: name, Value: c_value, Path: "/", Expires: expire, MaxAge: 86400}
-	http.SetCookie(cm.Context.Writer, &cookie)
+	newCookies := append(cm.Cookies, cookie)
+	cm.Cookies = newCookies
 }
-
-func (cm CookieManager) GetString(name string) string {
+func (cm *CookieManager) WriteCookies() {
+	for _, c := range cm.Cookies {
+		http.SetCookie(cm.Context.Writer, &c)
+	}
+}
+func (cm *CookieManager) GetString(name string) string {
 	return cm.CookieMap[name]
 }
 
-func (cm CookieManager) Get(name string) interface{} {
+func (cm *CookieManager) Get(name string) interface{} {
 	return cm.CookieMap[name]
 }
 
 func Cookie() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		cookieManager := CookieManager{Context: c, CookieMap: make(map[string]string)}
+		cookieManager := CookieManager{Context: c, CookieMap: make(map[string]string), Cookies: []http.Cookie{}}
 		cookieManager.InitCM(c)
 		c.Set("CM", cookieManager)
 		c.Next()
 		fmt.Println("Cookie is Working")
+		cookieManager.WriteCookies()
 	}
 }

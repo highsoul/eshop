@@ -12,13 +12,7 @@ type User struct {
 	Password string `sql:"not null"`
 }
 
-func (u User) CreateTable() {
-	T.DB.DropTableIfExists(&u)
-	T.DB.CreateTable(&u)
-
-}
-
-func (u User) InsertToDB() bool {
+func (u *User) InsertToDB() bool {
 	if T.DB.NewRecord(u) {
 		T.DB.Create(&u)
 		return true
