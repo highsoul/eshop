@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func main() {
@@ -24,11 +25,31 @@ func main() {
 	r.POST("/user/register", UserRegisterHandler)
 
 	/* Admin */
+	authorized.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "admin_index.html", nil)
+	})
 	authorized.GET("/goods", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "admin_goods.html", nil)
 	})
+	authorized.GET("/order", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "admin_order.html", nil)
+	})
+
 	authorized.GET("/category", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "admin_category.html", nil)
+		//cate := &model.Category{Top: 0}
+		cates := model.GetTop(0)
+		obj := make(map[string]interface{})
+		obj["cates"] = cates
+		c.HTML(http.StatusOK, "admin_category.html", obj)
+	})
+	authorized.POST("/category/add", func(c *gin.Context) {
+		top, _ := strconv.Atoi(c.PostForm("top"))
+		name := c.PostForm("name")
+		cate := model.Category{Name: name, Top: top}
+		if cate.InsertToDB() {
+			c.Redirect(http.StatusMovedPermanently, "/admin/category")
+		}
+
 	})
 
 	r.Run(":8080")

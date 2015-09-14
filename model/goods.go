@@ -7,4 +7,8 @@ import (
 
 type Goods struct {
 	gorm.Model
+	Name        string
+	Price       float32
+	Description string
+	Photo       string
 }
