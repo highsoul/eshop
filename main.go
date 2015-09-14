@@ -36,9 +36,11 @@ func main() {
 	})
 
 	authorized.GET("/category", func(c *gin.Context) {
-		//cate := &model.Category{Top: 0}
-		cates := model.GetTop(0)
+		cate := model.Category{Top: 0}
+		top_cates := cate.GetList()
+		cates := cate.GetAll()
 		obj := make(map[string]interface{})
+		obj["top_cates"] = top_cates
 		obj["cates"] = cates
 		c.HTML(http.StatusOK, "admin_category.html", obj)
 	})

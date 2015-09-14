@@ -21,8 +21,20 @@ func (c *Category) InsertToDB() bool {
 	}
 }
 
-func GetTop(top int) []Category {
+func (c *Category) GetAll() []Category {
 	cates := []Category{}
-	T.DB.Debug().Where(&cates, Category{Top: top}).Find(&cates)
+	T.DB.Debug().Find(&cates)
 	return cates
+}
+
+func (c *Category) GetList() []Category {
+	cates := []Category{}
+	T.DB.Debug().Where("top = ?", c.Top).Find(&cates)
+	return cates
+}
+
+func (c Category) GetTop() Category {
+	cate := Category{}
+	T.DB.First(cate, c.Top)
+	return cate
 }
