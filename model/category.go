@@ -35,6 +35,6 @@ func (c *Category) GetList() []Category {
 
 func (c Category) GetTop() Category {
 	cate := Category{}
-	T.DB.First(cate, c.Top)
+	T.DB.Debug().First(&cate, c.Top)
 	return cate
 }
