@@ -4,8 +4,8 @@
 		<div class="list-group col-md-2">
 
   			<a href="/admin/goods" class="list-group-item">商品管理</a>
-  			<a href="/admin/order" class="list-group-item active">订单管理</a>
-  			<a href="/admin/category" class="list-group-item">分类管理</a>
+  			<a href="/admin/order" class="list-group-item ">订单管理</a>
+  			<a href="/admin/category" class="list-group-item active">分类管理</a>
 		</div>
 
 		<div class="col-md-10 well">
@@ -82,7 +82,7 @@
               <h4 class="modal-title">修改分类</h4>
             </div>
             <div class="modal-body">
-              <form id="cate-form" action="/admin/category/modify" method="POST">
+              <form id="cate-m-form" action="/admin/category/modify" method="POST">
               <div class="form-group">
                 <label for="cate-m-name">分类名称</label>
                 <input id="cate-m-name" type="text" class="form-control" id="name" name="name" placeholder="分类名称">
@@ -96,12 +96,12 @@
                   {{end}}
               </select>
               </div>
-              <input id="cate-m-id" type="hidden" name="id" value="">
+              <input id="cate-m-id" type="hidden" name="id">
              </form>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-              <button id="ok-btn" type="button" class="btn btn-primary">确认添加</button>
+              <button id="m-ok-btn" type="button" class="btn btn-primary">确认修改</button>
             </div>
         </div>
       </div>
@@ -111,11 +111,34 @@
     console.log("ok");
     $("#cate-form").submit();
   })
-
-  $(".cate-m-btn").click(function(){
-    console.log($(this).data("id"))
-    console.log($(this).parent("tr").children("")
-    $("#cate-m-modal").modal("show")
+  $("#m-ok-btn").click(function(){
+    console.log("ok");
+    $("#cate-m-form").submit();
   })
+  $(".cate-m-btn").click(function(){
+    var id = $(this).data("id");
+    var url = "/admin/category/"+id;
+    $.get(url,function(data){
+      $("#cate-m-name").val(data.Name);
+      $("#cate-m-top").val(data.Top);
+      $("#cate-m-id").val(data.ID);
+      $("#cate-m-modal").modal("show");
+    });
+    
+  });
+  $(".cate-d-btn").click(function(){
+   
+      if (confirm("确认删除？")) {
+        var id = $(this).data("id");
+        var url = "/admin/category/delete/";
+        $.post(url,{id: id},function(data){
+            if(data.message == "ok"){
+              $(location).attr('href',"/admin/category")
+            }
+        });
+      };
+
+    
+  });
   </script>
 {{template "footer.html"}}

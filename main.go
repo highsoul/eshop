@@ -53,6 +53,28 @@ func main() {
 		}
 
 	})
+	authorized.POST("/category/modify", func(c *gin.Context) {
+		top, _ := strconv.Atoi(c.PostForm("top"))
+		name := c.PostForm("name")
+		cate := model.Category{Name: name, Top: top}
+		id, _ := strconv.Atoi(c.PostForm("id"))
+		cate.Update(id)
+		c.Redirect(http.StatusMovedPermanently, "/admin/category")
+
+	})
+	authorized.POST("/category/delete", func(c *gin.Context) {
+		id, _ := strconv.Atoi(c.PostForm("id"))
+		cate := model.Category{}
+		cate.Delete(id)
+		c.JSON(http.StatusOK, gin.H{"message": "ok"})
+
+	})
+	authorized.GET("/category/:id", func(c *gin.Context) {
+		cate_id, _ := strconv.Atoi(c.Param("id"))
+		cate := model.Category{}
+		cate.Get(cate_id)
+		c.JSON(http.StatusOK, cate)
+	})
 
 	r.Run(":8080")
 }

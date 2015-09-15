@@ -38,3 +38,18 @@ func (c Category) GetTop() Category {
 	T.DB.Debug().First(&cate, c.Top)
 	return cate
 }
+
+func (c *Category) Get(id int) {
+	T.DB.First(c, id)
+}
+
+func (c *Category) Update(id int) {
+	top := c.Top
+	name := c.Name
+	T.DB.First(c, id).Updates(Category{Top: top, Name: name})
+}
+
+func (c *Category) Delete(id int) {
+	T.DB.First(c, id)
+	T.DB.Delete(c)
+}
