@@ -33,6 +33,13 @@ func (c *Category) GetList() []Category {
 	return cates
 }
 
+func (c *Category) GetListNot() []Category {
+	cates := []Category{}
+	T.DB.Debug().Not("top", c.Top).Find(&cates)
+	fmt.Println(cates)
+	return cates
+}
+
 func (c Category) GetTop() Category {
 	cate := Category{}
 	T.DB.Debug().First(&cate, c.Top)

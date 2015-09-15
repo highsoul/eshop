@@ -29,7 +29,14 @@ func main() {
 		c.HTML(http.StatusOK, "admin_index.html", nil)
 	})
 	authorized.GET("/goods", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "admin_goods.html", nil)
+		cate := model.Category{Top: 0}
+		cates := cate.GetListNot()
+		goods := model.Goods{}
+		goods_list := goods.GetAll()
+		obj := make(map[string]interface{})
+		obj["cates"] = cates
+		obj["goods_list"] = goods_list
+		c.HTML(http.StatusOK, "admin_goods.html", obj)
 	})
 	authorized.GET("/order", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "admin_order.html", nil)

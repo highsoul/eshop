@@ -1,16 +1,147 @@
 {{template "header.html"}}
-<div class="row">
+	<div class="row">
 
 		<div class="list-group col-md-2">
 
   			<a href="/admin/goods" class="list-group-item active">商品管理</a>
-  			<a href="/admin/order" class="list-group-item">订单管理</a>
+  			<a href="/admin/order" class="list-group-item ">订单管理</a>
   			<a href="/admin/category" class="list-group-item">分类管理</a>
 		</div>
 
-	<div class="col-md-10 well">
-		
+		<div class="col-md-10 well">
+			<div class="btn-group">
+				<button class="btn btn-primary" data-toggle="modal" data-target="#goods-modal"><i class="fa fa-plus"></i>&nbsp;添加商品</button>
+			</div>
+      <table class="table table-hover">
+         <tr>
+              <td>ID</td>
+              <td>商品名称</td>
+              <td>商品价格</td>
+              <td>所属分类</td>
+              <td>操作</td>
+          </tr>
+        {{ range .goods_list }}
+          <tr>
+            <td>{{ .ID }}</td>
+            <td>{{ .Name }}</td>
+            <td>{{ .Price }}</td>
+            <td>{{ .Cate.Name}}</td>
+            <td>
+              <button data-id="{{.ID}}" class="goods-m-btn btn btn-primary">修改</button>
+              <button data-id="{{.ID}}" class="goods-d-btn btn btn-warning">删除</button>
+            </td>
+          </tr>
+        {{ end }}
+      </table>
+		</div>
 	</div>
-</div>
 
+	<div class="modal fade" id="goods-modal" role="dialog">
+		<div class="modal-dialog">
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        			<h4 class="modal-title">添加商品</h4>
+      			</div>
+      			<div class="modal-body">
+        			<form id="goods-form" action="/admin/goods/add" method="POST">
+  						<div class="form-group">
+    						<label for="name">商品名称</label>
+    						<input type="text" class="form-control" id="name" name="name" placeholder="分类名称">
+  						</div>
+  						<div class="form-group">
+    						<label for="price">商品价格</label>
+    						<input type="text" class="form-control" id="price" name="price" placeholder="0">
+  						</div>
+  						
+  						<div class="form-group">
+    						<label for="cate">所属分类</label>
+    						<select id="cate" name="cate" class="form-control">
+                 				{{range .cates}}
+                    				<option value="{{.ID}}">{{.Name}}</option>
+                  			{{end}}
+							</select>
+  						</div>
+              <div class="form-group">
+                <label for="description">商品描述</label>
+                <textarea class="form-control" rows="5" name="description" id="description"></textarea>
+              </div>
+
+  					 </form>
+      			</div>
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        			<button id="ok-btn" type="button" class="btn btn-primary">确认添加</button>
+      			</div>
+    		</div>
+  		</div>
+	</div>
+
+  <div class="modal fade" id="cate-m-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">修改分类</h4>
+            </div>
+            <div class="modal-body">
+              <form id="cate-m-form" action="/admin/category/modify" method="POST">
+              <div class="form-group">
+                <label for="cate-m-name">分类名称</label>
+                <input id="cate-m-name" type="text" class="form-control" id="name" name="name" placeholder="分类名称">
+              </div>
+              <div class="form-group">
+                <label for="cate-m-top">所属分类</label>
+                <select id="cate-m-top" name="top" class="form-control">
+                  <option value="0">顶级分类</option>
+                  {{range .top_cates}}
+                    <option value="{{.ID}}">{{.Name}}</option>
+                  {{end}}
+              </select>
+              </div>
+              <input id="cate-m-id" type="hidden" name="id">
+             </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+              <button id="m-ok-btn" type="button" class="btn btn-primary">确认修改</button>
+            </div>
+        </div>
+      </div>
+  </div>
+  <script type="text/javascript">
+  $("#ok-btn").click(function(){
+    console.log("ok");
+    $("#goods-form").submit();
+  })
+  $("#m-ok-btn").click(function(){
+    console.log("ok");
+    $("#cate-m-form").submit();
+  })
+  $(".cate-m-btn").click(function(){
+    var id = $(this).data("id");
+    var url = "/admin/category/"+id;
+    $.get(url,function(data){
+      $("#cate-m-name").val(data.Name);
+      $("#cate-m-top").val(data.Top);
+      $("#cate-m-id").val(data.ID);
+      $("#cate-m-modal").modal("show");
+    });
+    
+  });
+  $(".cate-d-btn").click(function(){
+   
+      if (confirm("确认删除？")) {
+        var id = $(this).data("id");
+        var url = "/admin/category/delete/";
+        $.post(url,{id: id},function(data){
+            if(data.message == "ok"){
+              $(location).attr('href',"/admin/category")
+            }
+        });
+      };
+
+    
+  });
+  </script>
 {{template "footer.html"}}
