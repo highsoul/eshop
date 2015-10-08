@@ -27,16 +27,21 @@ func (c *Category) GetAll() []Category {
 	return cates
 }
 
-func (c *Category) GetList() []Category {
+func (c *Category) GetTopList() []Category {
 	cates := []Category{}
 	T.DB.Debug().Where("top = ?", c.Top).Find(&cates)
 	return cates
 }
 
-func (c *Category) GetListNot() []Category {
+func (c *Category) GetTopListNot() []Category {
 	cates := []Category{}
 	T.DB.Debug().Not("top", c.Top).Find(&cates)
-	fmt.Println(cates)
+	return cates
+}
+
+func (c *Category) GetSubList() []Category {
+	cates := []Category{}
+	T.DB.Debug().Where("top = ?", c.ID).Find(&cates)
 	return cates
 }
 
@@ -58,5 +63,5 @@ func (c *Category) Update(id int) {
 
 func (c *Category) Delete(id int) {
 	T.DB.First(c, id)
-	T.DB.Delete(c)
+	T.DB.Unscoped().Delete(c)
 }

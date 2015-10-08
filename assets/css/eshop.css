@@ -3,6 +3,10 @@ body {
 	background-image: url("../icon/upfeathers.png");
 }
 
+.vert-align{
+	vertical-align: middle;
+}
+
 #main-nav{
 	background-color: #cf4646;
 	color: #e8e8e8;

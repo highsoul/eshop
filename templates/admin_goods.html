@@ -12,9 +12,10 @@
 			<div class="btn-group">
 				<button class="btn btn-primary" data-toggle="modal" data-target="#goods-modal"><i class="fa fa-plus"></i>&nbsp;添加商品</button>
 			</div>
-      <table class="table table-hover">
+      <table class="table table-hover table-striped">
          <tr>
               <td>ID</td>
+              <td>商品图片</td>
               <td>商品名称</td>
               <td>商品价格</td>
               <td>所属分类</td>
@@ -23,9 +24,14 @@
         {{ range .goods_list }}
           <tr>
             <td>{{ .ID }}</td>
+            <td><img style="width:50px;height:50px;" src="/assets/data/goods/{{.Photo}}" alt="..." class="img-rounded"></td>
             <td>{{ .Name }}</td>
             <td>{{ .Price }}</td>
-            <td>{{ .Cate.Name}}</td>
+            <td>
+              {{with .GetCate}}
+                  {{.Name}}
+                {{end}}
+            </td>
             <td>
               <button data-id="{{.ID}}" class="goods-m-btn btn btn-primary">修改</button>
               <button data-id="{{.ID}}" class="goods-d-btn btn btn-warning">删除</button>
@@ -44,10 +50,15 @@
         			<h4 class="modal-title">添加商品</h4>
       			</div>
       			<div class="modal-body">
-        			<form id="goods-form" action="/admin/goods/add" method="POST">
+        			<form id="goods-form" enctype="multipart/form-data" action="/admin/goods/add" method="POST">
+               <div class="form-group">
+                  <label for="photo">商品图片</label>
+                  <input type="file" id="photo" name="photo">
+                  <p class="help-block"></p>
+              </div>
   						<div class="form-group">
     						<label for="name">商品名称</label>
-    						<input type="text" class="form-control" id="name" name="name" placeholder="分类名称">
+    						<input type="text" class="form-control" id="name" name="name" placeholder="商品名称">
   						</div>
   						<div class="form-group">
     						<label for="price">商品价格</label>
@@ -77,29 +88,42 @@
   		</div>
 	</div>
 
-  <div class="modal fade" id="cate-m-modal" role="dialog">
+  <div class="modal fade" id="goods-m-modal" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title">修改分类</h4>
+              <h4 class="modal-title">修改商品</h4>
             </div>
             <div class="modal-body">
-              <form id="cate-m-form" action="/admin/category/modify" method="POST">
-              <div class="form-group">
-                <label for="cate-m-name">分类名称</label>
-                <input id="cate-m-name" type="text" class="form-control" id="name" name="name" placeholder="分类名称">
+              <form id="goods-m-form" enctype="multipart/form-data" action="/admin/goods/modify" method="POST">
+               <div class="form-group">
+                  <label for="m-photo">商品图片</label>
+                  <input type="file" id="m-photo" name="m-photo">
+                  <p class="help-block"></p>
               </div>
               <div class="form-group">
-                <label for="cate-m-top">所属分类</label>
-                <select id="cate-m-top" name="top" class="form-control">
-                  <option value="0">顶级分类</option>
-                  {{range .top_cates}}
-                    <option value="{{.ID}}">{{.Name}}</option>
-                  {{end}}
+                <label for="m-name">商品名称</label>
+                <input type="text" class="form-control" id="m-name" name="m-name" placeholder="商品名称">
+              </div>
+              <div class="form-group">
+                <label for="m-price">商品价格</label>
+                <input type="text" class="form-control" id="m-price" name="m-price" placeholder="0">
+              </div>
+              
+              <div class="form-group">
+                <label for="m-cate">所属分类</label>
+                <select id="m-cate" name="m-cate" class="form-control">
+                        {{range .cates}}
+                            <option value="{{.ID}}">{{.Name}}</option>
+                        {{end}}
               </select>
               </div>
-              <input id="cate-m-id" type="hidden" name="id">
+              <div class="form-group">
+                <label for="m-description">商品描述</label>
+                <textarea class="form-control" rows="5" name="m-description" id="m-description"></textarea>
+              </div>
+              <input type="hidden" id="m-id" name="m-id">
              </form>
             </div>
             <div class="modal-footer">
@@ -116,27 +140,31 @@
   })
   $("#m-ok-btn").click(function(){
     console.log("ok");
-    $("#cate-m-form").submit();
+    $("#goods-m-form").submit();
   })
-  $(".cate-m-btn").click(function(){
+  $(".goods-m-btn").click(function(){
     var id = $(this).data("id");
-    var url = "/admin/category/"+id;
+    var url = "/admin/goods/"+id;
     $.get(url,function(data){
-      $("#cate-m-name").val(data.Name);
-      $("#cate-m-top").val(data.Top);
-      $("#cate-m-id").val(data.ID);
-      $("#cate-m-modal").modal("show");
+      console.log(data)
+      $("#m-name").val(data.Name);
+      $("#m-price").val(data.Price);
+      $("#m-cate").val(data.CateID.Int64);
+      $("#m-description").val(data.Description);
+      $("#m-id").val(data.ID);
+
+      $("#goods-m-modal").modal("show");
     });
     
   });
-  $(".cate-d-btn").click(function(){
+  $(".goods-d-btn").click(function(){
    
       if (confirm("确认删除？")) {
         var id = $(this).data("id");
-        var url = "/admin/category/delete/";
+        var url = "/admin/goods/delete/";
         $.post(url,{id: id},function(data){
             if(data.message == "ok"){
-              $(location).attr('href',"/admin/category")
+              $(location).attr('href',"/admin/goods")
             }
         });
       };

@@ -1,3 +1,17 @@
-{{template "header.html"}}
-Hello Angular!
+{{template "header.html" .}}
+{{range .goods_list}}
+<div class="col-md-3">
+	<div class="thumbnail">
+      <img src="/assets/data/goods/{{.Photo}}" alt="{{.Name}}">
+      <div class="caption">
+        <h4>{{.Name}}</h4>
+        <h4 class="text-success">¥{{.Price}}</h4>
+        <p>{{.Description}}</p>
+        <p>
+        	<a href="#" class="btn btn-primary" role="button"><i class="fa fa-shopping-cart"></i>&nbsp;&nbsp;立即购买</a> 
+        </p>
+      </div>
+    </div>
+</div>
+{{end}}
 {{template "footer.html"}}

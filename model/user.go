@@ -7,9 +7,11 @@ import (
 
 type User struct {
 	gorm.Model
-	Name     string `sql:"not null;unique"`
+	Name     string `sql:"not null"`
 	Email    string `sql:"not null;unique"`
 	Password string `sql:"not null"`
+	Address  string `sql:"not null"`
+	Phone    string `sql:"not null"`
 }
 
 func (u *User) InsertToDB() bool {
@@ -20,4 +22,8 @@ func (u *User) InsertToDB() bool {
 		fmt.Println("FALSE!")
 		return false
 	}
+}
+
+func (u *User) GetByID(id int) {
+	T.DB.Debug().First(u, id)
 }
