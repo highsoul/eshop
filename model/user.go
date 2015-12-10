@@ -7,11 +7,10 @@ import (
 
 type User struct {
 	gorm.Model
-	Name     string `sql:"not null"`
-	Email    string `sql:"not null;unique"`
-	Password string `sql:"not null"`
-	Address  string `sql:"not null"`
-	Phone    string `sql:"not null"`
+	Name      string `sql:"not null"`
+	Email     string `sql:"not null;unique"`
+	Password  string `sql:"not null"`
+	Addresses []Address
 }
 
 func (u *User) InsertToDB() bool {
@@ -26,4 +25,10 @@ func (u *User) InsertToDB() bool {
 
 func (u *User) GetByID(id int) {
 	T.DB.Debug().First(u, id)
+}
+
+func (u *User) GetAddressList() []Address {
+	addressList := []Address{}
+	T.DB.Model(u).Related(&addressList)
+	return addressList
 }

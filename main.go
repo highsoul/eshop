@@ -30,7 +30,8 @@ func main() {
 	r.POST("/user/register", UserRegisterHandler)
 	r.GET("/user/login", UserLogin)
 	r.POST("/user/login", UserLogin)
-
+	r.POST("address/new", NewAddress)
+	r.POST("address/del", DelAddress)
 	/* Admin */
 	authorized.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "admin_index.html", nil)
@@ -183,6 +184,12 @@ func ShowIndex(c *gin.Context) {
 	goods := model.Goods{}
 	goods_list := goods.GetAll()
 	data["goods_list"] = goods_list
+	me := tool.GetMe(c)
+	if me.ID > 0 {
+		data["address_list"] = me.GetAddressList()
+		data["order_list"] = me.GetOrderList()
+	}
+
 	c.HTML(http.StatusOK, "index.html", data)
 }
 
@@ -191,7 +198,7 @@ func UserRegisterHandler(c *gin.Context) {
 	if c.Request.Method == "GET" {
 		c.HTML(http.StatusOK, "register.html", nil)
 	} else if c.Request.Method == "POST" {
-		u := model.User{Email: c.PostForm("email"), Name: c.PostForm("name"), Password: c.PostForm("password"), Phone: c.PostForm("phone"), Address: c.PostForm("address")}
+		u := model.User{Email: c.PostForm("email"), Name: c.PostForm("name"), Password: c.PostForm("password")}
 		if u.InsertToDB() {
 			cookie = c.MustGet("CM").(middleware.CookieManager)
 			cookie.Add("user_id", u.ID)
@@ -215,7 +222,7 @@ func UserLogin(c *gin.Context) {
 	cookie = c.MustGet("CM").(middleware.CookieManager)
 	if c.Request.Method == "GET" {
 		data := tool.GetTD(c)
-		data["fail_msg"] = cookie.GetFlash("fail_msg")
+
 		fmt.Println(data)
 		c.HTML(http.StatusOK, "login.html", data)
 	} else if c.Request.Method == "POST" {
@@ -234,4 +241,36 @@ func UserLogin(c *gin.Context) {
 		}
 
 	}
+}
+
+func NewAddress(c *gin.Context) {
+	me := tool.GetMe(c)
+
+	if me.ID > 0 {
+		var cookie middleware.CookieManager
+		cookie = c.MustGet("CM").(middleware.CookieManager)
+		province := c.PostForm("province")
+		city := c.PostForm("city")
+		detail := c.PostForm("detail")
+		name := c.PostForm("name")
+		phone := c.PostForm("phone")
+		address := model.Address{Province: province, City: city, Detail: detail, Name: name, Phone: phone, UserID: int(me.ID)}
+		address.Create()
+		cookie.Flash("success_msg", "address add success")
+		c.Redirect(http.StatusMovedPermanently, "/")
+	}
+
+}
+
+func DelAddress(c *gin.Context) {
+
+	var cookie middleware.CookieManager
+	cookie = c.MustGet("CM").(middleware.CookieManager)
+	a_id, _ := strconv.Atoi(c.PostForm("id"))
+	address := model.Address{}
+	address.Get(a_id)
+	fmt.Println(address)
+	address.Delete()
+	cookie.Flash("success_msg", "address delete success")
+	c.JSON(http.StatusOK, address)
 }

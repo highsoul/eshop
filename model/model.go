@@ -20,5 +20,5 @@ func InitTool() {
 		log.Fatalf("链接数据库出错哦 '%v'", err)
 	}
 
-	T.DB.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8").AutoMigrate(&User{}, &Category{}, &Goods{})
+	T.DB.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8").AutoMigrate(&User{}, &Category{}, &Goods{}, &Address{})
 }

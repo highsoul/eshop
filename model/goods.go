@@ -18,7 +18,7 @@ type Goods struct {
 
 func (g *Goods) InsertToDB() bool {
 	if T.DB.NewRecord(g) {
-		T.DB.Debug().Create(&g)
+		T.DB.Create(&g)
 		return true
 	} else {
 		fmt.Println("FALSE!")
@@ -32,7 +32,7 @@ func (g *Goods) Get(id int) {
 
 func (g *Goods) GetAll() []Goods {
 	goods_list := []Goods{}
-	T.DB.Debug().Find(&goods_list)
+	T.DB.Find(&goods_list)
 	return goods_list
 }
 

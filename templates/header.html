@@ -6,6 +6,7 @@
 	<link rel="stylesheet" type="text/css" href="/assets/css/eshop.css"/>
 	<script type="text/javascript" src="/assets/js/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/assets/js/eshop.js"></script>
 	<title>张杪昀的网店</title>
 </head>
 <body>
@@ -42,6 +43,7 @@
               {{.me.Name}} <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
+                <li><a id="menu-item-address">我的地址</a></li>
                 <li><a href="#">我的订单</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="/user/logout">退出登录</a></li>
@@ -66,5 +68,8 @@
 			<div class="col-md-12">
      {{if .fail_msg}}
         <div class="alert alert-danger" role="alert">{{ .fail_msg }}</div>
+    {{ end }}
+     {{if .success_msg}}
+        <div class="alert alert-success" role="alert">{{ .success_msg }}</div>
     {{ end }}
    
