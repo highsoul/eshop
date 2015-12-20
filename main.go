@@ -187,7 +187,7 @@ func ShowIndex(c *gin.Context) {
 	me := tool.GetMe(c)
 	if me.ID > 0 {
 		data["address_list"] = me.GetAddressList()
-		data["order_list"] = me.GetOrderList()
+		//data["order_list"] = me.GetOrderList()
 	}
 
 	c.HTML(http.StatusOK, "index.html", data)

@@ -18,6 +18,13 @@ $(document).ready(function(){
 	$(".goods_buy_btn").click(function(){
 		$("#order-goods-img").attr("href", "/assets/data/goods/" + $(this).data("img"));
 		$("#order-goods-name").text($(this).data("name") + "        ￥"+$(this).data("price"));
+		$("#order-goods-id").val($(this).data("id"));
 		$("#order-form-modal").modal('show');
+		
 	});
+
+	$("#order-form-submit").click(function(){
+		$("#order-form").submit();
+	})
+	 
 });

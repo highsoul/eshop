@@ -1,16 +1,16 @@
 package model
 
 import (
-	"database/sql"
 	"github.com/jinzhu/gorm"
 )
 
 type Order struct {
 	gorm.Model
-	UserID  `sql:"index"`
-	GoodsID `sql:"index"`
-	Count   int
-	Status  string
+	UserID    int `sql:"index"`
+	GoodsID   int `sql:"index"`
+	AddressID int `sql:"index"`
+	Count     int
+	Status    string
 }
 
 func (o Order) Create() {

@@ -116,12 +116,14 @@
               {{ range .address_list }}
               <div class="radio">
                 <label>
-                  <input type="radio" name="address" value="{{.ID}}" checked>
+                  <input type="radio" name="address" value="{{.ID}}">
                   {{.Province}}{{.City}}{{.Detail}}&nbsp;&nbsp;{{.Name}}&nbsp;&nbsp;{{.Phone}}
                 </label>
               </div>
               {{ end }}
             </div>
+
+            <input id="order-goods-id" type="hide" value="">
           </form>
         </div>
         <div class="modal-footer">
